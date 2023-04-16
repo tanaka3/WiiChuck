@@ -1,7 +1,8 @@
-#ifndef Accessory_h
-#define Accessory_h
+#ifndef Accessory32_h
+#define Accessory32_h
 
 #include "Arduino.h"
+#include <Wire.h>
 
 //
 
@@ -60,7 +61,8 @@ class Accessory: public Classic,
 		public Drums,
 		public Guitar {
 public:
-	Accessory();
+	Accessory(uint8_t bus_num = 0);
+	
 	void reset();
 	ControllerType type;
 
@@ -70,13 +72,10 @@ public:
 	void printInputs(Stream& stream = Serial);
 
 	void begin();
+	void begin(uint8_t sda, uint8_t scl);
 	boolean readData();
 
 	void enableEncryption(bool enc);
-
-	void addMultiplexer(uint8_t iic, uint8_t sw);
-	void switchMultiplexer();
-	static void switchMultiplexer(uint8_t iic, uint8_t sw);
 
 	int decodeInt(uint8_t msbbyte, uint8_t msbstart, uint8_t msbend,
 			uint8_t csbbyte, uint8_t csbstart, uint8_t csbend, uint8_t lsbbyte,
@@ -220,8 +219,11 @@ protected:
 	uint8_t _dataarrayTMP[dataArraySize];
 	uint8_t _dataarrayReadConsec[dataArraySize];
 	uint8_t _dataarray[dataArraySize];
-	uint8_t _multiplexI2C = 0;
-	uint8_t _multiplexSwitch;
+
+	uint8_t _sda;
+	uint8_t _scl;
+
+	TwoWire *Wire;
 
 	//uint8_t _key_table_1[16]= {0xe0,0x7d,0xe0,0x7d,0xe0,0x7d,0xe0,0x7d,0xe0,0x7d,0x38,0x54,0xbb,0x79,0x01,0x43};
 	uint8_t _key_table_1[16] =
@@ -233,9 +235,6 @@ protected:
 	boolean _burstRead(uint8_t addr = 0);
 	void _writeRegister(uint8_t reg, uint8_t value);
 	void _burstWriteWithAddress(uint8_t addr, uint8_t* arr, uint8_t size);
-
-private:
-	static void sendMultiSwitch(uint8_t iic, uint8_t sw);
 
 	uint8_t mapCount;
 };

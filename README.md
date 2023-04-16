@@ -12,6 +12,23 @@ An Arduino library for talking to every extension controller made for the Wii in
 * Taiko Drums
 
 
+## Custom
+* Modified for ESP32 only
+* Delete Multiplexer
+* Supports multiple I2C
+* Support Port specification at Begin
+
+```
+	ex)
+	Accessory nunchuck1(0);
+	Accessory nunchuck2(1);
+
+	nunchuck1.begin(23, 19);
+	nunchuck2.begin(5, 13);
+```
+
+
+
 # Mapping
 
 All controllers have been mapped across a single readable array so that code written for one Wii accessort can be made generic for all of Wii accessory devices. The values that come from the controller are scaled to a 0-255 range for all analog and for all digital values. Each value is stored in a single byte in the 'values[]' array, a public member of the accessory class. 
